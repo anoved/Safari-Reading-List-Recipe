@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+from os import popen
+from calibre.web.feeds.news import BasicNewsRecipe
+import BeautifulSoup
+
+# We're going to use BeautifulSoup's XML parser (BeautifulStoneSoup) to read
+# the contents of a Mac OS X property list file, so we need to teach it a bit
+# about how to handle certain tags so it doesn't misinterpret them and fail.
+# Credit to http://www.mail-archive.com/tutor@python.org/msg07974.html for the
+# clue how to do this.
+class PropertyListParser(BeautifulSoup.BeautifulStoneSoup):
+	NESTABLE_TAGS = BeautifulSoup.buildTagMap([], ['array', 'dict'])
+	SELF_CLOSING_TAGS = BeautifulSoup.buildTagMap(None, ['true', 'false'])
+
+class SafariReadingListRecipe(BasicNewsRecipe):
+	
+	# General info about this recipe.
+	title = 'Safari Reading List'
+	description = 'Compile unread articles from your Safari Reading List into an ebook. Mac OS X only.'
+	
+	# Configure Calibre's processing of each article. Unlike most recipes, this
+	# recipe is not fetching articles from a single known source, so we can't
+	# really predict how the articles will be formatted. Use Readability.
+	auto_cleanup = True
+	no_stylesheets = True
+	remove_javascript = True
+	
+	def parse_index(self):
+		
+		articles = []
+		
+		# First, get the xml_data containing Safari's bookmarks.
+		xml_pipe = popen('/usr/bin/plutil -convert xml1 -o - ~/Library/Safari/Bookmarks.plist', 'r')
+		xml_data = xml_pipe.read()
+		xml_pipe.close()
+		
+		# Parse the bookmark xml and locate the reading list items, if any.
+		soup = PropertyListParser(xml_data)
+		rlid = soup.find(text='com.apple.ReadingList').parent
+		rl_array = rlid.parent.find('array')
+		if None == rl_array:
+			return [('Reading List Items', [])]
+		
+		# Clean up the reading list tree and start stepping through the items.
+		rl = rl_array.extract()
+		[newline.extract() for newline in rl.findAll(text='\n')]
+		rl_items = rl.contents
+		rl_items.reverse()
+		for rl_item in rl_items:
+			
+			# We're only interested in Unread items, not items that have already been viewed.
+			if None != rl_item.find(text='DateLastViewed'):
+				continue
+			
+			# Extract metadata about the article.
+			# Using plain non-Unicode strings because Calibre generates errors otherwise (?).
+			# Would be considerate to reformat fetchdate timestamp. (Is it even used?)
+			# We don't really the article authors from the Reading List info.
+			item_title     = str(rl_item.find(text='title').parent.nextSibling.string)
+			item_preview   = str(rl_item.find(text='PreviewText').parent.nextSibling.string)
+			item_url       = str(rl_item.find(text='URLString').parent.nextSibling.string)
+			item_fetchdate = str(rl_item.find(text='DateLastFetched').parent.nextSibling.string)
+			item_author    = ''
+			
+			articles.append({
+					'title': item_title,
+					'url': item_url,
+					'description': item_preview,
+					'date': item_fetchdate,
+					'author': item_author})
+				
+		return [('Reading List Items', articles)]
