@@ -34,8 +34,3 @@ To add items to your Reading List in Safari, select *Add to Reading List* from t
 To run this recipe and create an ebook from your Unread Reading List items, go to Calibre and select *Schedule news download* from the *Fetch news* toolbar button or menu. Locate the *Safari Reading List* recipe and click *Download now*. Alternatively, set a schedule for Calibre to automatically update your *Safari Reading List* ebook.
 
 Remember that this recipe does not remove items from your Reading List, so you'll have to do so yourself. The oldest unread item in your Reading List appears first in the output ebook.
-
-Extra
------
-
-`readinglistdump.py` is a standalone Python script (requiring [Beautiful Soup 3.x](http://www.crummy.com/software/BeautifulSoup/)) that prints the same Reading List item information used by the Calibre recipe. It contains a *wee* bit more explanation.
