@@ -15,8 +15,8 @@ This recipe will only work on Mac OS X, for the reason that it loads its list of
 Limitations
 -----------
 
-- **Reading List items are not removed or marked as read.** In other words, articles will remain in your Reading List until you manually remove them.
-- Since your Reading List may point to articles on any site, there is no way to anticipate exactly what content to extract. This recipe therefore relies on Calibre's `auto_cleanup` function, which is derived from [Readability](https://code.google.com/p/arc90labs-readability/). It works pretty well.
+- **Reading List items are not removed or marked as read.** In other words, articles will remain in your Reading List until you manually remove them. (This recipe does not edit or modify your bookmarks file.)
+- Since your Reading List may point to articles on any site, there is no way to anticipate exactly what content to extract. This recipe therefore relies on Calibre's `auto_cleanup` function, which is derived from [Readability](https://code.google.com/p/arc90labs-readability/). It works pretty OK.
 - Sometimes Safari cannot determine the article title and will just provide the name of the site. This is reflected in the recipe output.
 - Minimal testing has been performed. 
 - No error checking is performed.
