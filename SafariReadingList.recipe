@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from os import popen
-import datetime
+from subprocess import Popen, PIPE
 import plistlib
 from calibre.web.feeds.news import BasicNewsRecipe
 
@@ -25,7 +24,7 @@ class SafariReadingListRecipe(BasicNewsRecipe):
 		articles = []
 		
 		# First, get the xml_data containing Safari's bookmarks.
-		xml_pipe = popen('/usr/bin/plutil -convert xml1 -o - ~/Library/Safari/Bookmarks.plist', 'r')
+		xml_pipe = Popen('/usr/bin/plutil -convert xml1 -o - ~/Library/Safari/Bookmarks.plist', shell=True, stdout=PIPE).stdout
 		bm_plist = plistlib.readPlist(xml_pipe)
 		xml_pipe.close()
 		
