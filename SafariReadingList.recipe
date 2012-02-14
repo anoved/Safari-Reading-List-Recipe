@@ -10,7 +10,7 @@ class SafariReadingListRecipe(BasicNewsRecipe):
 	title = 'Safari Reading List'
 	description = 'Generate an ebook from the unread items in your Safari Reading List. (For Mac OS X only.)'
 	__author__ = 'Jim DeVona'
-	__version__ = '1.1'
+	__version__ = '1.2'
 
 	# Configure Calibre's processing of each article. Unlike most recipes, this
 	# recipe is not fetching articles from a single known source, so we can't
