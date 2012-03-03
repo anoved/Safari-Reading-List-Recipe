@@ -32,7 +32,10 @@ class SafariReadingListRecipe(BasicNewsRecipe):
 		rl_section = filter(lambda rec: 'com.apple.ReadingList' == rec.get('Title'), bm_plist['Children'])
 		reading_list = rl_section[0].get('Children')
 		if None == reading_list:
-			return [('Reading List Items', [])]
+			# Raise an exception to prevent the recipe from generating an empty book.
+			# Results in an annoying error displayed to the user, but does not block other scheduled recipes.
+			# Reference: http://www.mobileread.com/forums/showthread.php?p=1370010#post1370010
+			raise Exception, "There are no Reading List articles."
 		
 		# Loop through the Reading List items, starting with the oldest
 		reading_list.reverse()
