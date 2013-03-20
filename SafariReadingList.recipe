@@ -47,9 +47,11 @@ class SafariReadingListRecipe(BasicNewsRecipe):
 			
 			# Extract metadata about the article.
 			item_title     = rl_item['URIDictionary']['title']
-			item_preview   = rl_item['ReadingList']['PreviewText']
+			item_preview   = rl_item['ReadingList'].get('PreviewText', '')
 			item_url       = rl_item['URLString']
-			item_fetchdate = rl_item['ReadingList']['DateLastFetched'].ctime()
+			item_fetchdate = rl_item['ReadingList'].get('DateLastFetched')
+			if None == item_fetchdate:
+				item_fetchdate = rl_item['ReadingListNonSync'].get('DateLastFetched')
 			item_author    = ''
 			
 			articles.append({
